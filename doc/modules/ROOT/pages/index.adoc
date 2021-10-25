@@ -137,6 +137,7 @@ In the following example, we will work with map entries where the keys are sessi
 [source,go]
 ----
 package main
+package main
 
 import (
 	"context"
@@ -147,25 +148,35 @@ import (
 )
 
 func main() {
-    ctx := context.TODO()
-    client, err := hazelcast.StartNewClient(ctx) 
-    if err != nil {
-    	log.Fatal(err)
-    }
-    // error handling was omitted for brevity
-    // get a map
-    emails, _ := client.GetMap(ctx, "emails")
-    // set a value in the map
-    _ = emails.Set(ctx, "sid12345", "example1@email.com")
-    _ = emails.Set(ctx, "sid12346", "example2@email.com")
-    // get a value from the map
-    email1, _ := emails.Get(ctx, "sid12345")
-    email2, _ := emails.Get(ctx, "sid12346")
-    fmt.Println(email1)
-    fmt.Println(email2)
-    // stop the client to release resources
-    client.Shutdown(ctx)
+	ctx := context.TODO()
+	client, err := hazelcast.StartNewClient(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// get a map
+	emails, _ := client.GetMap(ctx, "emails")
+	// set a value in the map
+	if err := emails.Set(ctx, "sid12345", "example1@email.com"); err != nil {
+		log.Fatal(err)
+	}
+	if err := emails.Set(ctx, "sid12346", "example2@email.com"); err != nil {
+		log.Fatal(err)
+	}
+	// get a value from the map
+	email1, err := emails.Get(ctx, "sid12345")
+	if err == nil {
+		log.Fatal(err)
+	}
+	email2, err := emails.Get(ctx, "sid12346")
+	if err == nil {
+		log.Fatal(err)
+	}
+	fmt.Println(email1)
+	fmt.Println(email2)
+	// stop the client to release resources
+	client.Shutdown(ctx)
 }
+
 ----
 
 The output of this snippet is given below: 
@@ -235,7 +246,10 @@ func main() {
 	entryListenerConfig := hazelcast.MapEntryListenerConfig{
 		IncludeValue: true,
 	}
-	emails, _ := client.GetMap(ctx, "emails")
+	emails, err := client.GetMap(ctx, "emails")
+	if err != nil {
+		log.Fatal(err)
+	}
 	emails.Clear(ctx)
 	// enable receiving entry added events
 	entryListenerConfig.NotifyEntryAdded(true)
@@ -243,7 +257,7 @@ func main() {
 	entryListenerConfig.NotifyEntryRemoved(true)
 	// enable receiving entry updated events
 	entryListenerConfig.NotifyEntryUpdated(true)
-	subscriptionID, _ := emails.AddEntryListener(ctx, entryListenerConfig, func(event *hazelcast.EntryNotified) {
+	subscriptionID, err := emails.AddEntryListener(ctx, entryListenerConfig, func(event *hazelcast.EntryNotified) {
 		switch event.EventType {
 		// this is an entry added event
 		case hazelcast.EntryAdded:
@@ -256,20 +270,43 @@ func main() {
 			fmt.Println("Entry Updated from", event.Value, "to", event.OldValue)
 		}
 	})
-	_ = emails.Set(ctx, "sid12345", "example1@email.com")
-	_ = emails.Set(ctx, "sid12346", "example2@email.com")
-	email1, _ := emails.Get(ctx, "sid12345")
-	email2, _ := emails.Get(ctx, "sid12346")
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := emails.Set(ctx, "sid12345", "example1@email.com"); err != nil {
+		log.Fatal(err)
+	}
+	if err := emails.Set(ctx, "sid12346", "example2@email.com"); err != nil {
+		log.Fatal(err)
+	}
+	email1, err := emails.Get(ctx, "sid12345")
+	if err != nil {
+		log.Fatal(err)
+	}
+	email2, err := emails.Get(ctx, "sid12346")
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println("Email1:", email1)
 	fmt.Println("Email2:", email2)
 
-	_ = emails.Delete(ctx, "sid12345")
-	_ = emails.Set(ctx, "sid12346", "example1@email.com")
+	if err := emails.Delete(ctx, "sid12345"); err != nil {
+		log.Fatal(err)
+	}
+	if err := emails.Set(ctx, "sid12346", "example1@email.com"); err != nil {
+		log.Fatal(err)
+	}
 
-	email1, _ = emails.Get(ctx, "sid12345")
-	email2, _ = emails.Get(ctx, "sid12346")
-	fmt.Println(email1)
-	fmt.Println(email2)
+	email1, err = emails.Get(ctx, "sid12345")
+	if err != nil {
+		log.Fatal(err)
+	}
+	email2, err = emails.Get(ctx, "sid12346")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Email1:", email1)
+	fmt.Println("Email2:", email2)
 
 	// you can use the subscriptionID later to remove the event listener.
 	if err := emails.RemoveEntryListener(ctx, subscriptionID); err != nil {
