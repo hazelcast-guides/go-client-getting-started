@@ -68,7 +68,7 @@ Initialize a new go module to start working on with any module name you prefer:
 
 [source,bash]
 ----
-go mod init exampe
+go mod init example
 ----
 
 Add Hazelcast Go Client's latest version as a dependency:
@@ -81,7 +81,7 @@ go get github.com/hazelcast/hazelcast-go-client@latest
 We are ready to start experimenting with Go Client. Let's create a go file:
 
 [source,bash]
----
+----
 touch map.go
 ----
 
@@ -118,11 +118,6 @@ To run this go project, use the following command:
 go run map.go
 ----
 
-The majority of the client methods return promises, so we used the https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function[async/await] syntax here,
-but you can use the regular https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then[then] / https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch[catch]
-syntax, too.
-
-
 The following line creates and starts a new Hazelcast client with the default configuration.
 
 [source,go]
@@ -157,20 +152,17 @@ func main() {
     if err != nil {
     	log.Fatal(err)
     }
+    // error handling was omitted for brevity
     // get a map
-    people, err := client.GetMap(ctx, "emails")
-    if err != nil {
-        log.Fatal(err)
-    }
+    emails, _ := client.GetMap(ctx, "emails")
     // set a value in the map
-    if err = people.Set(ctx, "sid12345", "example1@email.com"); err != nil {
-        log.Fatal(err)
-    }
+    _ = emails.Set(ctx, "sid12345", "example1@email.com")
+    _ = emails.Set(ctx, "sid12346", "example2@email.com")
     // get a value from the map
-    if email1, err := people.Get(ctx, "sid12345"); err != nil {
-        log.Fatal(err)
-    }
-    fmt.Println(email)
+    email1, _ := emails.Get(ctx, "sid12345")
+    email2, _ := emails.Get(ctx, "sid12346")
+    fmt.Println(email1)
+    fmt.Println(email2)
     // stop the client to release resources
     client.Shutdown(ctx)
 }
@@ -181,31 +173,32 @@ The output of this snippet is given below:
 [source,bash]
 ----
 example1@email.com
+example2@email.com
 ----
 
-The following line returns a map proxy object for the 'someMap' map:
+The following line returns a map proxy struct for the 'emails' map:
 
-[source,javascript]
+[source,go]
 ----
-const map = await client.getMap('someMap');
+emails, err := client.GetMap(ctx, "emails")
 ----
 
-If the map called “someMap” does not exist in the Hazelcast cluster, it will be automatically created. All the clients that connect to the same cluster will have access to the same map.
+If the map called “emails” does not exist in the Hazelcast cluster, it will be automatically created. All the clients that connect to the same cluster will have access to the same map.
 
-With these two lines, the Node.js client adds data to the map. The first parameter is the key of the entry, the second one is the value:
+With these line, the Go client adds data to the map. The first parameter is context. Methods in the Go Client supports uses context parameter to satisfy cancelation signals, and deadlines that originate on your programs. The second parameter is the key of the entry, the third one is the value:
 
-[source,javascript]
+[source,go]
 ----
- await map.set('sid12345', 'example1@email.com');
- await map.set('sid12346', 'example2@email.com');
+ emails.Set(ctx, "sid12345", "example1@email.com")
+ emails.Set(ctx, "sid12346", "example2@email.com")
 ----
 
 Finally, we get the values we added to the map with the get method:
 
-[source,javascript]
+[source,go]
 ----
-console.log(await map.get('sid12345'));
-console.log(await map.get('sid12346'));
+email1, _ := emails.Get(ctx, "sid12345")
+email2, _ := emails.Get(ctx, "sid12346")
 ----
 
 == Adding a Listener to the Map
