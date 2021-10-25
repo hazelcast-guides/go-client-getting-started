@@ -43,13 +43,13 @@ In this guide, you will learn:
 
 == Starting a Hazelcast Member
 
-We will use the 4.2 version of Hazelcast for this guide. 
+We will use the 5.0 version of Hazelcast for this guide. 
 
-In this guide, we will use Docker for simplicity. You can find the different installation methods https://docs.hazelcast.com/imdg/4.2/installation/installing-upgrading.html[here.]
+In this guide, we will use Docker for simplicity. You can find the different installation methods https://docs.hazelcast.com/hazelcast/5.0/getting-started/install-hazelcast[here.]
 
 [source,bash]
 ----
-docker run -p 5701:5701 hazelcast/hazelcast:4.2
+docker run --name hazelcast -p 5701:5701 hazelcast/hazelcast:5.0
 ----
 
 This will start a new Hazelcast member at port 5701. Now, we have a Hazelcast cluster with just one member. 
@@ -176,7 +176,7 @@ example1@email.com
 example2@email.com
 ----
 
-The following line returns a map proxy struct for the 'emails' map:
+The following line returns a map proxy for the 'emails' map:
 
 [source,go]
 ----
@@ -185,7 +185,8 @@ emails, err := client.GetMap(ctx, "emails")
 
 If the map called “emails” does not exist in the Hazelcast cluster, it will be automatically created. All the clients that connect to the same cluster will have access to the same map.
 
-With these line, the Go client adds data to the map. The first parameter is context. Methods in the Go Client supports context parameter to satisfy cancelation signals, and deadlines that may originate in your programs. The second parameter is the key of the entry, the third one is the value:
+With these lines, the Go client adds data to the map. The first parameter is context. Go client supports the Go context package. Most methods have the context as the first parameter. Check out the Go context documentation https://pkg.go.dev/context[here].
+The second parameter is the key of the entry, the third one is the value:
 
 [source,go]
 ----
@@ -203,10 +204,10 @@ email2, _ := emails.Get(ctx, "sid12346")
 
 == Adding a Listener to the Map
 
-You can add an entry listener using the “AddEntryListener” method available on map proxy struct.
+You can add an entry listener using the “AddEntryListener” method available on map proxy.
 This will allow you to listen to certain events that happen in the map across the cluster.
 
-The first argument being a context instance as we discussed before, the second argument to the “addEntryListener” method is a configuration struct of type "MapEntryListenerConfig". This contains options to filter the events by key and/or predicate and has an option to include the value of the entry, not just the key.
+The first argument being a context instance as we discussed before, the second argument to the “AddEntryListener” method is a configuration of type "MapEntryListenerConfig". This contains options to filter the events by key and/or predicate and has an option to include the value of the entry, not just the key.
 You should also choose which type of events you want to receive.
 In this example, we registered listeners for “added”, “removed" and “updated” events and we listen for all of the keys.
 Third argument is a function parameter that is called every time an enabled event is received. In this example we implement a switch-case to differantiate event types.
@@ -297,6 +298,12 @@ example1@email.com
 
 The value of the first entry becomes “nil” since it is removed.
 
+== Cleanup
+[source,bash]
+----
+docker rm -f hazelcast
+----
+
 == Summary
 
 // Provide a quick summary
@@ -308,8 +315,8 @@ In this guide, you learned how to get started with Hazelcast Go Client using a d
 // Add some links to resources, such as other related guides.
 // Use relative links used on the home page (see https://raw.githubusercontent.com/hazelcast-guides/guides-site/master/home/modules/ROOT/pages/index.adoc)
 
-There are a lot of things that you can do with the Go client. For more, such as how you can query a map with predicates and SQL,
+There are a lot of things that you can do with the Go client. For more, such as how you can query a map with predicates,
 check out our https://github.com/hazelcast/hazelcast-go-client[Go client repository.] or jump straight to the https://pkg.go.dev/github.com/hazelcast/hazelcast-go-client[documentation].
 
-If you have any questions, suggestions, or feedback please do not hesitate to reach out to us via https://slack.hazelcast.com/[Hazelcast Community Slack.]
+If you have any questions, suggestions, or feedback please do not hesitate to reach out to us via https://hazelcastcommunity.slack.com/channels/go-client[Hazelcast Community Slack.]
 Also, please take a look at https://github.com/hazelcast/hazelcast-go-client/issues[the issue list] if you would like to contribute to the client.
