@@ -4,7 +4,7 @@ This is the base template for Hazelcast integration module guides.
 You can clone this repository, work on it and create your guide, and then push to a new repository.
 ////
 
-:github-address: https://github.com/utku-caglayan/go-client-getting-started
+:github-address: https://github.com/hazelcast-guides/go-client-getting-started
 :source-highlighter: rouge
 :templates-url: https://raw.githubusercontent.com/hazelcast-guides/adoc-templates/master
 
