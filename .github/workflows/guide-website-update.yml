@@ -2,7 +2,7 @@ name: Guide Web Site Deploy
 
 on:
   push:
-    branches: master
+    branches: main
     paths:
       - 'doc/**'
 
