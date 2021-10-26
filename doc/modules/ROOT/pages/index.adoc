@@ -189,7 +189,7 @@ example1@email.com
 example2@email.com
 ----
 
-The following line returns a map proxy for the "emails" map:
+The following line returns a map proxy for the 'emails' map:
 
 [source,go]
 ----
