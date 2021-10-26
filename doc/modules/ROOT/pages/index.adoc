@@ -17,7 +17,7 @@ You can clone this repository, work on it and create your guide, and then push t
 
 = Getting Started with Hazelcast Go Client
 
-This guide will get you started with Hazelcast Go Client. You can see the whole project https://github.com/utku-caglayan/go-client-getting-started[here.]
+This guide will get you started with Hazelcast Go Client. You can see the whole project https://github.com/hazelcast-guides/go-client-getting-started[here.]
 
 == What You’ll Learn
 
