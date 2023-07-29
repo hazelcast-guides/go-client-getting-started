@@ -22,6 +22,7 @@
 2. Log in to your Hazelcast Viridian Cloud account and navigate to your https://viridian.hazelcast.com[cluster list].
 3. Create a new cluster or start an existing one.
 4. Identify the Hazelcast Viridian Cloud https://viridian.hazelcast.com[cluster] you want to connect to and choose Connect Cluster.
+5. From the Advanced setup tab, download the keystore files and take note of your Cluster ID, Discovery Token and Password as you will need them later. 
 
 == Setup a Hazelcast Client
 
@@ -47,12 +48,18 @@ Install Hazelcast Go client's latest version as a dependency:
 go get github.com/hazelcast/hazelcast-go-client@latest
 ----
 
+Extract the keystore files you downloaded from Viridian into this directory. The files you need for this tutorial are:
+
+[source,bash]
+----
+ca.pem
+cert.pem
+key.pem
+----
+
 == Understanding the Go Client
 
-The following section creates and starts a Hazelcast client with default configuration, before shutting it down at the end.
-This client automatically connects to a Hazelcast member available on the local machine.
-
-The examples further below, show how to connect to a Viridian instance.
+The following section creates and starts a Hazelcast client with default configuration, connects to your Viridian cluster before shutting the client down at the end.
 
 Create a Go file named “example.go” and put the following code inside it:
 
@@ -69,14 +76,36 @@ import (
 )
 
 func main() {
-	client, err := hazelcast.StartNewClient(context.TODO())
+
+	// Connection details for cluster
+	config := hazelcast.Config{}
+	config.Cluster.Name = "<CLUSTER_NAME>"
+
+	config.Cluster.Cloud.Enabled = true
+	config.Cluster.Cloud.Token = "<YOUR_DISCOVERY_TOKEN>"
+
+	config.Cluster.Network.SSL.Enabled = true
+	config.Cluster.Network.SSL.SetTLSConfig(&tls.Config{ServerName: "hazelcast.cloud"})
+
+	caFile, err := filepath.Abs("./ca.pem")
+	certFile, err := filepath.Abs("./cert.pem")
+	keyFile, err := filepath.Abs("./key.pem")
+
+	config.Cluster.Network.SSL.SetCAPath(caFile)
+	config.Cluster.Network.SSL.AddClientCertAndEncryptedKeyPath(certFile, keyFile, "<CERTIFICATE_PASSWORD>")
+
+	// create the client and connect to the cluster
+	client, err := hazelcast.StartNewClientWithConfig(context.TODO(), config)
+
+	os.Stdout.WriteString("Welcome to your Hazelcast Viridian Cluster!")
+
+	defer client.Shutdown(context.TODO())
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(client.Name())
 }
-----
+---
 
 To run this Go script, use the following command:
 
