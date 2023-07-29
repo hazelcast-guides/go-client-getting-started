@@ -79,7 +79,7 @@ func main() {
 
 	// Connection details for cluster
 	config := hazelcast.Config{}
-	config.Cluster.Name = "<CLUSTER_NAME>"
+	config.Cluster.Name = "<YOUR_CLUSTER_ID>"
 
 	config.Cluster.Cloud.Enabled = true
 	config.Cluster.Cloud.Token = "<YOUR_DISCOVERY_TOKEN>"
@@ -92,7 +92,7 @@ func main() {
 	keyFile, err := filepath.Abs("./key.pem")
 
 	config.Cluster.Network.SSL.SetCAPath(caFile)
-	config.Cluster.Network.SSL.AddClientCertAndEncryptedKeyPath(certFile, keyFile, "<CERTIFICATE_PASSWORD>")
+	config.Cluster.Network.SSL.AddClientCertAndEncryptedKeyPath(certFile, keyFile, "<YOUR_CERTIFICATE_PASSWORD>")
 
 	// create the client and connect to the cluster
 	client, err := hazelcast.StartNewClientWithConfig(context.TODO(), config)
@@ -265,7 +265,7 @@ func main() {
 
 	// Connection details for cluster
 	config := hazelcast.Config{}
-	config.Cluster.Name = "<CLUSTER_NAME>"
+	config.Cluster.Name = "<YOUR_CLUSTER_ID>"
 
 	config.Cluster.Cloud.Enabled = true
 	config.Cluster.Cloud.Token = "<YOUR_DISCOVERY_TOKEN>"
@@ -278,7 +278,7 @@ func main() {
 	keyFile, err := filepath.Abs("./key.pem")
 
 	config.Cluster.Network.SSL.SetCAPath(caFile)
-	config.Cluster.Network.SSL.AddClientCertAndEncryptedKeyPath(certFile, keyFile, "<CERTIFICATE_PASSWORD>")
+	config.Cluster.Network.SSL.AddClientCertAndEncryptedKeyPath(certFile, keyFile, "<YOUR_CERTIFICATE_PASSWORD>")
 
 	// Register Compact Serializers
 	config.Serialization.Compact.SetSerializers(CitySerializer{})
