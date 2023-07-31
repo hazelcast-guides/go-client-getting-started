@@ -1,8 +1,9 @@
 = Getting Started with the Hazelcast Go Client
 :page-layout: tutorial
 :page-product: platform
-:page-categories: Caching, Getting Started
+:page-categories: Get Started
 :page-lang: go
+:page-enterprise:
 :page-est-time: 5-10 mins
 :description: This tutorial will get you started with the Hazelcast Go client and manipulate a map.
 
