@@ -304,7 +304,7 @@ func main() {
 
 == Summary
 
-In this tutorial, you learned how to get started with Hazelcast Go Client, connect to a Viridian instance and put data into a distributed map.
+In this tutorial, you learned how to get started with the Hazelcast Go Client, connect to a Viridian instance and put data into a distributed map.
 
 == See Also
 
