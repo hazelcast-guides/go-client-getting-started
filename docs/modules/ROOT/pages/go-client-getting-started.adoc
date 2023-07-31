@@ -114,8 +114,6 @@ Hazelcast SQL API is a Calcite SQL based interface to allow you to interact with
 
 In the following example, we will create a map and insert into it, entries where the keys are ids and the values are defined as an object representing a city.
 
-NOTE: SSL certificate files are available from the Python client download available from Viridian.
-
 [source,go]
 ----
 package main
@@ -292,6 +290,24 @@ func main() {
 		panic(err)
 	}
 }
+----
+
+The output of this code is given below:
+
+[source,bash]
+----
+Creating the mapping...OK.
+Inserting data...OK.
+Fetching cities...OK.
+--Results of 'SELECT __key, this FROM cities'
+|   id | country              | city                 | population      |
+|    2 | United Kingdom       | Manchester           | 2770434         |
+|    6 | Türkiye              | Ankara               | 5309690         |
+|    1 | United Kingdom       | London               | 9540576         |
+|    7 | Brazil               | Sao Paulo            | 22429800        |
+|    4 | United States        | Los Angeles          | 3985520         |
+|    5 | Türkiye              | Istanbul             | 15636243        |
+|    3 | United States        | New York             | 19223191        |
 ----
 
 == Summary
